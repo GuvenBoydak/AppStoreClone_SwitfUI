@@ -20,17 +20,18 @@ enum ErrorMessage: Error {
 enum Path: String {
     case base_url = "https://itunes.apple.com/"
     case search = "search?term="
+    case entity = "&entity=software"
 }
 
 
 protocol NetworkProtocol {
-    func fetchREquest<T: Codable>(path: String,method: HTTPMethod) async throws -> T
+    func fetchRequest<T: Codable>(path: String,method: HTTPMethod) async throws -> T
 }
 
 final class NetworkManager: NetworkProtocol {
 
-    func fetchREquest<T: Codable>(path: String, method: HTTPMethod) async throws -> T  {
-        guard let url = URL(string: "\(Path.base_url.rawValue)\(path)") else {
+    func fetchRequest<T: Codable>(path: String, method: HTTPMethod) async throws -> T  {
+        guard let url = URL(string: "\(Path.base_url.rawValue)\(path)\(Path.entity.rawValue)") else {
             throw ErrorMessage.URLError
         }
         var urlRequest = URLRequest(url: url)
