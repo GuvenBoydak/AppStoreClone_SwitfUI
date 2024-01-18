@@ -7,23 +7,6 @@
 
 import Foundation
 
-
-enum HTTPMethod: String {
-    case get = "GET"
-}
-
-enum ErrorMessage: Error {
-    case URLError
-    case DataParseErrror
-}
-
-enum Path: String {
-    case base_url = "https://itunes.apple.com/"
-    case search = "search?term="
-    case entity = "&entity=software"
-}
-
-
 protocol NetworkProtocol {
     func fetchRequest<T: Codable>(path: String,method: HTTPMethod) async throws -> T
 }
@@ -31,7 +14,7 @@ protocol NetworkProtocol {
 final class NetworkManager: NetworkProtocol {
 
     func fetchRequest<T: Codable>(path: String, method: HTTPMethod) async throws -> T  {
-        guard let url = URL(string: "\(Path.base_url.rawValue)\(path)\(Path.entity.rawValue)") else {
+        guard let url = URL(string: path) else {
             throw ErrorMessage.URLError
         }
         var urlRequest = URLRequest(url: url)

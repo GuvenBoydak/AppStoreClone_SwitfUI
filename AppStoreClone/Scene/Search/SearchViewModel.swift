@@ -12,15 +12,16 @@ final class SearchViewModel: ObservableObject {
     @Published var keyword: String = ""
     @Published var searchResponse: [SearchResult] = []
     
-    let networkManager: NetworkProtocol
+   private let networkManager: NetworkProtocol
     
     init( networkManager: NetworkProtocol) {
         self.networkManager = networkManager
     }
     
     func searchData() async {
+        let url = "\(Path.base_url.rawValue)\(Path.search.rawValue)\(String(describing: keyword.trimmingCharacters(in: .whitespacesAndNewlines)))\(Path.entity.rawValue)"
         do {
-            let result: Search = try await networkManager.fetchRequest(path: "\(Path.search.rawValue)\(String(describing: keyword.trimmingCharacters(in: .whitespacesAndNewlines)))", method: .get)
+            let result: Search = try await networkManager.fetchRequest(path: url, method: .get)
             searchResponse = result.results
         } catch  {
             print(error)

@@ -32,7 +32,7 @@ struct SearchView: View {
     SearchView()
 }
 
-struct SearchCellView: View {
+private struct SearchCellView: View {
     var data: SearchResult
     var body: some View {
         VStack{
@@ -54,10 +54,10 @@ struct SearchCellView: View {
                 }
                 .padding(.horizontal)
                 Spacer()
-                Button("GET") {
+                Button(LocalizableKey.Apps.dowland.rawValue.locale()) {
                     
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
             }
             .padding(.horizontal)
             ScrollView(.horizontal) {
@@ -72,14 +72,13 @@ struct SearchCellView: View {
     }
 }
 
-struct ImageView: View {
-    var image: String = ""
+private struct ImageView: View {
+    var image: String
     var body: some View {
         AsyncImage(url: URL(string: image)) { image in
             image
                 .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 100)
+                .frame(width: 100,height: 180)
                 .cornerRadius(10)
         } placeholder: {
             ProgressView()
