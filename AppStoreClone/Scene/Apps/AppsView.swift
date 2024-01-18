@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct AppsView: View {
+    @StateObject var appsVM = AppsViewModel(networkMnager: NetworkManager())
+    
     let paidGrid: [GridItem] = [
-        GridItem(.fixed(60),spacing: 15,alignment: nil),
-        GridItem(.fixed(60),spacing: 15,alignment: nil),
-        GridItem(.fixed(60),spacing: 15,alignment: nil)
+        GridItem(.fixed(60),spacing: 0,alignment: .leading),
+        GridItem(.fixed(60),spacing: 0,alignment: .leading),
+        GridItem(.fixed(60),spacing: 0,alignment: .leading)
     ]
     
     var body: some View {
@@ -21,39 +23,43 @@ struct AppsView: View {
                     VStack(alignment: .leading) {
                         ScrollView(.horizontal,showsIndicators: false) {
                             HStack {
-                                AppHeaderView()
-                                AppHeaderView()
-                                AppHeaderView()
+                                ForEach(appsVM.headerApps,id:\.id) { app in
+                                    AppHeaderView(headerApp: app)
+                                }
                             }
                             .padding(.vertical)
                         }
                         Divider()
                             .padding(.horizontal)
-                        Text("Populer Ucretli")
+                        Text(LocalizableKey.Apps.paid.rawValue.locale())
                             .bold()
                         ScrollView(.horizontal,showsIndicators: false){
                             LazyHGrid(rows: paidGrid) {
-                                PaidAppView()
-                                PaidAppView()
-                                PaidAppView()
+                                ForEach(appsVM.topPaidApps,id:\.id) { app in
+                                    TopAppView(topApp: app)
+                                }
                             }
                         }
                         Divider()
                             .padding(.horizontal)
-                        Text("Populer Ucretsiz")
+                        Text(LocalizableKey.Apps.free.rawValue.locale())
                             .bold()
                         ScrollView(.horizontal,showsIndicators: false){
                             LazyHGrid(rows: paidGrid) {
-                                PaidAppView()
-                                PaidAppView()
-                                PaidAppView()
+                                ForEach(appsVM.topFreeApps,id:\.id) { app in
+                                    TopAppView(topApp: app)
+                                }
                             }
                         }
-                        
                     }
                     .padding(.horizontal)
                 }
                 .navigationTitle(LocalizableKey.Apps.apps.rawValue.locale())
+            }                
+            .task {
+                await appsVM.fetchTopPaid()
+                await appsVM.fetchTopFree()
+                await appsVM.fetchHeaderApp()
             }
         }
     }
@@ -63,12 +69,14 @@ struct AppsView: View {
 }
 
 private struct AppImageView: View {
+    var url: String
     var body: some View {
-        AsyncImage(url: URL(string: "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/b3/52/4b/b3524b04-69be-42a2-a756-da7d02dd5b25/AppIcon-0-0-1x_U007emarketing-0-10-0-0-85-220.png/100x100bb.png")) { image in
+        AsyncImage(url: URL(string: url)) { image in
             image
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width:50,height: 50)
+                .cornerRadius(15)
                 .overlay(
                     RoundedRectangle(cornerSize: CGSize(width: 15, height: 15))
                         .stroke(lineWidth: 0.8)
@@ -80,48 +88,51 @@ private struct AppImageView: View {
     }
 }
 
-private struct PaidAppView: View {
+private struct TopAppView: View {
+    var topApp: AppResult
     var body: some View {
         VStack {
             HStack {
-                AppImageView()
+                AppImageView(url: topApp.artworkUrl100)
                 VStack(alignment: .leading) {
-                    Text("Name Basli")
-                        .font(.title3)
-                    Text("Alt baslik")
+                    Text(topApp.name)
+                        .font(.callout)
+                        .frame(width: 120,alignment: .leading)
+                    Text(topApp.genres.isEmpty ? "" : topApp.genres[0].name)
                         .font(.subheadline)
                         .foregroundStyle(.gray)
                 }
-                Button("Downland") {
+                Button(LocalizableKey.Apps.dowland.rawValue.locale()) {
                     
                 }
                 .frame(width: 100)
                 .buttonStyle(.bordered)
                 .cornerRadius(20)
-                .padding(.leading,80)
-                
+                .padding(.leading,60)
             }
+            Divider()
+                .padding(.horizontal,60)
         }
     }
 }
 
 private struct AppHeaderView: View {
+    var headerApp: AppHeader
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Name app")
+            Text(headerApp.name)
                 .font(.title3)
-            Text("Alt baslik")
+            Text(headerApp.title)
                 .font(.subheadline)
             Spacer()
-            AsyncImage(url: URL(string: "https://is1-ssl.mzstatic.com/image/thumb/Purple126/v4/98/d1/49/98d149b0-645a-7cf4-fb16-3948ff3dd471/AppIcon-1x_U007emarketing-0-10-0-85-220.png/100x100bb.png")) { image in
+            AsyncImage(url: URL(string: headerApp.imageURL)) { image in
                 image
                     .resizable()
                     .frame(width:350,height: 220)
                     .cornerRadius(10)
             } placeholder: {
-                
+                ProgressView()
             }
-            
         }
     }
 }
