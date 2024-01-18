@@ -10,15 +10,16 @@ import SwiftUI
 struct TabbarView: View {
     var body: some View {
         TabView {
-            Image(systemName: "xmark").tabItem {
+            AppsView().tabItem {
                 Image(systemName: ImageKey.Apps.app.rawValue)
                 Text(LocalizableKey.Apps.apps.rawValue.locale())
             }
-            Image(systemName: "xmark").tabItem {
+            SearchView()
+                .tabItem {
                 Image(systemName: ImageKey.Search.search.rawValue)
                 Text(LocalizableKey.Search.search.rawValue.locale())
             }
-            Image(systemName: "xmark").tabItem {
+            TodayView().tabItem {
                 Image(systemName: ImageKey.Today.today.rawValue)
                 Text(LocalizableKey.Today.today.rawValue.locale())
             }
