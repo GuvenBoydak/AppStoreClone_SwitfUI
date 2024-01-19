@@ -36,7 +36,11 @@ struct AppsView: View {
                         ScrollView(.horizontal,showsIndicators: false){
                             LazyHGrid(rows: paidGrid) {
                                 ForEach(appsVM.topPaidApps,id:\.id) { app in
-                                    TopAppView(topApp: app)
+                                    NavigationLink(destination: AppDetailView(id: app.id).navigationBarTitleDisplayMode(.inline)) {
+                                                AppCellView(appcell: AppCell(name: app.name,
+                                                                              artworkUrl100: app.artworkUrl100,
+                                                                              genreName: app.genres.isEmpty ? "" : app.genres[0].name))
+                                            }
                                 }
                             }
                         }
@@ -47,7 +51,11 @@ struct AppsView: View {
                         ScrollView(.horizontal,showsIndicators: false){
                             LazyHGrid(rows: paidGrid) {
                                 ForEach(appsVM.topFreeApps,id:\.id) { app in
-                                    TopAppView(topApp: app)
+                                    NavigationLink(destination: AppDetailView(id: app.id).navigationBarTitleDisplayMode(.inline)) {
+                                                AppCellView(appcell: AppCell(name: app.name,
+                                                                              artworkUrl100: app.artworkUrl100,
+                                                                              genreName: app.genres.isEmpty ? "" : app.genres[0].name))
+                                            }
                                 }
                             }
                         }
@@ -55,7 +63,7 @@ struct AppsView: View {
                     .padding(.horizontal)
                 }
                 .navigationTitle(LocalizableKey.Apps.apps.rawValue.locale())
-            }                
+            }
             .task {
                 await appsVM.fetchTopPaid()
                 await appsVM.fetchTopFree()
@@ -68,53 +76,7 @@ struct AppsView: View {
     AppsView()
 }
 
-private struct AppImageView: View {
-    var url: String
-    var body: some View {
-        AsyncImage(url: URL(string: url)) { image in
-            image
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width:50,height: 50)
-                .cornerRadius(15)
-                .overlay(
-                    RoundedRectangle(cornerSize: CGSize(width: 15, height: 15))
-                        .stroke(lineWidth: 0.8)
-                        .fill(.gray)
-                        .shadow(radius: 10))
-        } placeholder: {
-            ProgressView()
-        }
-    }
-}
 
-private struct TopAppView: View {
-    var topApp: AppResult
-    var body: some View {
-        VStack {
-            HStack {
-                AppImageView(url: topApp.artworkUrl100)
-                VStack(alignment: .leading) {
-                    Text(topApp.name)
-                        .font(.callout)
-                        .frame(width: 120,alignment: .leading)
-                    Text(topApp.genres.isEmpty ? "" : topApp.genres[0].name)
-                        .font(.subheadline)
-                        .foregroundStyle(.gray)
-                }
-                Button(LocalizableKey.Apps.dowland.rawValue.locale()) {
-                    
-                }
-                .frame(width: 100)
-                .buttonStyle(.bordered)
-                .cornerRadius(20)
-                .padding(.leading,60)
-            }
-            Divider()
-                .padding(.horizontal,60)
-        }
-    }
-}
 
 private struct AppHeaderView: View {
     var headerApp: AppHeader

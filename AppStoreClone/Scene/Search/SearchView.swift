@@ -54,7 +54,7 @@ private struct SearchCellView: View {
                 }
                 .padding(.horizontal)
                 Spacer()
-                Button(LocalizableKey.Apps.dowland.rawValue.locale()) {
+                Button(LocalizableKey.Apps.downland.rawValue.locale()) {
                     
                 }
                 .buttonStyle(.bordered)
