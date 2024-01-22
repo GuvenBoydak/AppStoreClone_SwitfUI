@@ -1,0 +1,27 @@
+/* 
+  Localizable.strings
+  AppStoreClone
+
+  Created by Güven Boydak on 17.01.2024.
+  
+*/
+
+// apps
+"Apps" = "Uygulamalar";
+"Popular paid" = "Popüler Ücretli";
+"Popular free" = "Popüler Ücresiz";
+"Downland" = "İndir";
+"Preview" = "Önizleme";
+"Version" = "Versiyon";
+"Whats New" = "Yenilikler";
+"3 days before" = "3 gün önce";
+"Raiting and Comment" = "Puan ve Yorum";
+
+
+
+// today
+"Today" = "Bugün";
+
+
+// search
+"Search" = "Arama";
