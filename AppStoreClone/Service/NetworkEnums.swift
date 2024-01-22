@@ -24,4 +24,6 @@ enum Path: String {
     case free = "https://rss.applemarketingtools.com/api/v2/us/apps/top-free/25/apps.json"
     case paid = "https://rss.applemarketingtools.com/api/v2/us/apps/top-paid/25/apps.json"
     case header = "https://raw.githubusercontent.com/hakkicansengonul/hakkicansengonul.github.io/main/appstore/header"
+    case raiting = "rss/customerreviews/page=1/id="
+    case raitingEnd = "/sortbt=mostrecent/json?1=en&cc=us"
 }

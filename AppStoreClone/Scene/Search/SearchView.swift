@@ -11,19 +11,22 @@ struct SearchView: View {
     @StateObject var searchVM = SearchViewModel(networkManager: NetworkManager())
     var body: some View {
         NavigationStack {
-            ScrollView(.vertical){
-                ForEach(searchVM.searchResponse,id:\.trackId) { data in
-                    SearchCellView(data: data)
-                }
+            ScrollView(.vertical,showsIndicators: false){
+                  ForEach(searchVM.searchResponse,id:\.trackId) { data in
+                      NavigationLink(destination: AppDetailView(id: String(data.trackId)).navigationBarTitleDisplayMode(.inline)) {
+                 SearchCellView(data: data)
+                         }
+             }
             }
         }
         .searchable(text: $searchVM.keyword)
         .onChange(of: searchVM.keyword, { _, newValue in
-            if !newValue.isEmpty{
+            if !newValue.isEmpty {
                 Task {
                     await searchVM.searchData()
                 }
             }
+            searchVM.searchResponse = []
         })
     }
 }
@@ -48,6 +51,7 @@ private struct SearchCellView: View {
                 VStack(alignment:.leading) {
                     Text(data.trackName)
                         .font(.title3)
+                        .lineLimit(1)
                     Text(data.primaryGenreName)
                         .font(.footnote)
                         .foregroundStyle(.gray)
@@ -60,7 +64,7 @@ private struct SearchCellView: View {
                 .buttonStyle(.bordered)
             }
             .padding(.horizontal)
-            ScrollView(.horizontal) {
+            ScrollView(.horizontal,showsIndicators: false) {
                 HStack{
                     ForEach(data.screenshotUrls,id:\.self) { image in
                         ImageView(image: image)

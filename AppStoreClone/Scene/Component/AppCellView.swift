@@ -18,6 +18,7 @@ struct AppCellView: View {
                         .font(.callout)
                         .frame(width: 120,alignment: .leading)
                         .foregroundColor(.black)
+                        .multilineTextAlignment(.leading)
                     Text(appcell.genreName)
                         .font(.subheadline)
                         .foregroundStyle(.gray)
